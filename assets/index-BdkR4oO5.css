@@ -32,7 +32,8 @@ main {
   margin: 64px 0;
 }
 .star {
-  width: 24px;
+  width: 22px;
+  height: 22px;
 }
 button {
   border: 0;
@@ -75,15 +76,14 @@ button.primary {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
 }
 .overlay img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.backdrop{
-  background-color: rgba(0,0,0,0.5);
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   left: 0;
@@ -106,7 +106,7 @@ button.primary {
 .top-header {
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -128,7 +128,7 @@ h1.logo {
   position: absolute;
   left: 0;
   z-index: 3;
-  cursor:pointer;
+  cursor: pointer;
 }
 .search-bar {
   flex: 1;
@@ -141,6 +141,36 @@ h1.logo {
   border-radius: 30px;
   background: transparent;
   z-index: 3;
+}
+@media screen and (max-width: 992px) {
+  .search-bar {
+    max-width: 400px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .search-bar {
+    max-width: 300px;
+  }
+  h1.logo, h1.logo img {
+    width: 100px;
+  }
+}
+@media screen and (max-width: 615px) {
+  .logo-search-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h1.logo {
+    position: static;
+    text-align: center;
+  }
+
+  .search-bar {
+    width: 100%;
+    max-width: 280px;
+  }
 }
 .search-bar input {
   flex: 1;
@@ -157,16 +187,23 @@ h1.logo {
   cursor: pointer;
   font-size: 20px;
   color: white;
-  padding: 10px
+  padding: 10px;
 }
 .rate {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   color: var(--color-yellow);
 }
 .rate > img {
+  margin-right: 3px;
+}
+.rate > span {
   position: relative;
   top: 2px;
+}
+.modal-rate {
+  font-size: 20px;
+  font-weight: bold;
 }
 span.rate-value {
   margin-left: 8px;
@@ -177,19 +214,19 @@ span.rate-value {
   font-size: 3rem;
   font-weight: bold;
 }
-.load-more{ 
+.load-more {
   background-color: var(--color-lightblue-90);
-  width:1280px;
-  height:50px;
+  width: 1280px;
+  height: 50px;
 
   color: var(--color-white);
   font-weight: bold;
-  font-size:24px;
+  font-size: 24px;
 
-  margin:0 auto 56px;
+  margin: 0 auto 56px;
   border-radius: 4px;
 }
-.hidden{
+.hidden {
   display: none;
 }
 footer.footer {
@@ -211,29 +248,33 @@ footer.footer p:not(:last-child) {
   border-radius: 4px;
 }
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 .thumbnail.skeleton-box {
   width: 200px;
   height: 300px;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 .item-desc.skeleton-box {
   width: 200px;
   height: 24px;
 }
-.no-result{
-  display:flex;
+.no-result {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.no-result img{
-  width:72px;
+.no-result img {
+  width: 72px;
 }
-.no-result h1{
-  font-size:3rem;
+.no-result h1 {
+  font-size: 3rem;
   font-weight: bold;
 }
 /* modal.css */
@@ -254,9 +295,7 @@ body.modal-open {
   z-index: 10;
   visibility: hidden; /* 모달이 기본적으로 보이지 않도록 설정 */
   opacity: 0;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .modal-background.active {
   visibility: visible;
@@ -269,7 +308,8 @@ body.modal-open {
   color: white;
   z-index: 2;
   position: relative;
-  width: 1000px;
+  width: 90%;
+  /* max-height: 700px; */
 }
 .close-modal {
   position: absolute;
@@ -282,6 +322,12 @@ body.modal-open {
   color: white;
   font-size: 20px;
   cursor: pointer;
+  width: 17px;
+  height: 17px;
+}
+.close-modal img {
+  width: 100%;
+  height: 100%;
 }
 .modal-container {
   display: flex;
@@ -296,20 +342,86 @@ body.modal-open {
   margin-left: 16px;
   line-height: 1.6rem;
 }
-.modal-description .rate > img {
+.modal-description .modal-rate-container {
+  display: flex;
+  margin-top: 10px;
+}
+.modal-description .modal-rate-container > img {
   position: relative;
   top: 5px;
 }
-.modal-description > *:not(:last-child) {
-  margin-bottom: 8px;
-}
-.modal-description h2 {
+.movie-title  {
   font-size: 2rem;
-  margin: 0 0 8px;
+  font-weight: 600;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  line-height: 1.2;
+}
+.modal-description h3 {
+  font-weight: 600;
+  padding-bottom: 10px;
 }
 .detail {
   max-height: 430px;
   overflow-y: auto;
+}
+.modal-rate-container .label {
+  margin-right: 10px;
+}
+.modal-description hr {
+  border: none;
+  height: 1px;
+  background-color: white;
+  opacity: 0.3;
+  margin: 15px 0;
+}
+.my-rate {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.my-rate .label {
+  display: flex;
+  gap: 5px;
+}
+.my-rate .score {
+  color: gray;
+}
+@media screen and (max-width: 768px) {
+  .modal {
+    max-height: 900px;
+  }
+  .modal-image img {
+    width: 250px;
+    border-radius: 16px;
+  }
+  .modal-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .movie-title, .movie-genre {
+    text-align: center;
+  }
+  .modal-rate-container {
+    display: flex;
+    justify-content: center;
+  }
+  .detail {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+}
+@media screen and (max-width: 480px) {
+  .modal-image img {
+    width: 200px;
+    border-radius: 16px;
+  }
+}
+@media screen and (max-width: 385px) {
+  .my-rate {
+    display: flex;
+    flex-direction: column;
+  }
 }
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -470,8 +582,31 @@ table {
   display: grid;
   grid-template-columns: repeat(5, 200px);
   gap: 70px;
-
   justify-content: center;
+}
+@media screen and (max-width: 1200px) {
+  .thumbnail-list {
+    grid-template-columns: repeat(4, 200px);
+    gap: 60px;
+  }
+}
+@media screen and (max-width: 992px) {
+  .thumbnail-list {
+    grid-template-columns: repeat(3, 200px);
+    gap: 50px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .thumbnail-list {
+    grid-template-columns: repeat(2, 200px);
+    gap: 40px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .thumbnail-list {
+    grid-template-columns: repeat(1, 200px);
+    gap: 30px;
+  }
 }
 .thumbnail {
   width: 200px;
@@ -497,5 +632,6 @@ p.rate > span {
 }
 .item .star {
   width: 16px;
+  height: 16px;
   top: 1px;
 }
