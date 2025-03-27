@@ -132,6 +132,7 @@ const fetchPopularMovieList = async (currentPage2) => {
 };
 const fetchSearchMovieList = async (search, currentPage2) => {
   showSkeleton();
+  console.log("검색 api 호출");
   try {
     const url = `https://api.themoviedb.org/3/search/movie?query=${search}&include_adult=false&language=ko-KR&page=${currentPage2}`;
     const response = await fetch(url, OPTIONS);
@@ -421,9 +422,11 @@ const SearchBar = () => {
   return searchBar;
 };
 const searchMovie = async (input) => {
+  var _a;
   movieState.setMode("search");
   $(".thumbnail-list").replaceChildren();
   $("#caption").innerText = `"${input}" 검색 결과`;
+  (_a = $(".no-result")) == null ? void 0 : _a.remove();
   try {
     movieState.setSearchKeyword(input);
     const movies = await fetchSearchMovieList(
@@ -434,10 +437,10 @@ const searchMovie = async (input) => {
     $(".top-rated-container").classList.add("hidden");
     $(".overlay-img").classList.add("hidden");
     if (movies.results.length === 0 && !$(".no-result")) {
+      console.log("검색 결과가 없어여");
       $(".thumbnail-list").after(NoSearchResults("검색 결과가 없습니다."));
       return;
     }
-    if ($(".no-result")) $(".no-result").remove();
     loadMovies(movies);
   } catch (error) {
     console.log(error);
