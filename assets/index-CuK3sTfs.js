@@ -56,8 +56,6 @@ const Footer = () => {
     `
   );
 };
-const $ = (selector, parent = document) => parent.querySelector(selector);
-const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(selector));
 const Button = ({ text, className }) => {
   const button = document.createElement("button");
   button.classList.add(...className);
@@ -76,6 +74,17 @@ const Rate = ({ rate, className = [], isFilled = false }) => {
     `
   );
   return rateElement;
+};
+const NoSearchResults = (text) => {
+  return createElement(
+    /*html*/
+    `
+    <div class="no-result">
+      <img src="./images/no_result_logo.png" alt="검색 결과 없음"/>
+      <h2>${text}</h2>
+    </div>  
+  `
+  );
 };
 const SkeletonMovieItem = () => {
   return createElement(
@@ -96,6 +105,8 @@ const SkeletonMovieItem = () => {
   `
   );
 };
+const $ = (selector, parent = document) => parent.querySelector(selector);
+const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(selector));
 const OPTIONS = {
   headers: {
     Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOWEwZmY0MWMzZWEwYzgzZDM4NzUyMDEyMDZjZTQ4OCIsIm5iZiI6MTc0MjI3MTM3OS4yNjksInN1YiI6IjY3ZDhmMzkzMzU3MmFmNWJjYzA4N2YzNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nsiAdq7QtxeJ1-6ogVOc9BMxak9H9jVPuvHaOWHU7hA"}`,
@@ -215,14 +226,8 @@ const MyRating = (movie) => {
   stars.forEach((star, i) => {
     star.addEventListener("mouseover", () => {
       currentScore = (i + 1) * 2;
-      stars.forEach((s, j) => {
-        s.setAttribute(
-          "src",
-          j <= i ? "./images/star_filled.png" : "./images/star_empty.png"
-        );
-      });
-      label.textContent = SCORE_AND_LABEL[currentScore];
-      score.textContent = `(${currentScore}/10)`;
+      updateStars(stars, i);
+      updateScoreText(label, score, currentScore);
     });
     star.addEventListener("mouseleave", () => {
       if (selectedScore === 0 && myScore !== 0) {
@@ -230,37 +235,31 @@ const MyRating = (movie) => {
         selectedStarIdx = filledCount - 1;
       }
       if (selectedStarIdx === -1) {
-        stars.forEach((s) => {
-          s.setAttribute("src", "./images/star_empty.png");
-        });
-        currentScore = 0;
-        label.textContent = SCORE_AND_LABEL[currentScore];
-        score.textContent = `(${currentScore}/10)`;
+        updateStars(stars, -1);
+        updateScoreText(label, score, 0);
       } else {
         selectedScore = (selectedStarIdx + 1) * 2;
-        stars.forEach((s, j) => {
-          s.setAttribute(
-            "src",
-            j <= selectedStarIdx ? "./images/star_filled.png" : "./images/star_empty.png"
-          );
-        });
-        label.textContent = SCORE_AND_LABEL[selectedScore];
-        score.textContent = `(${selectedScore}/10)`;
+        updateStars(stars, selectedStarIdx);
+        updateScoreText(label, score, selectedScore);
       }
     });
     star.addEventListener("click", () => {
       currentScore = (i + 1) * 2;
       selectedStarIdx = i;
-      stars.forEach((s, j) => {
-        s.setAttribute(
-          "src",
-          j <= i ? "./images/star_filled.png" : "./images/star_empty.png"
-        );
-      });
-      label.textContent = SCORE_AND_LABEL[currentScore];
-      score.textContent = `(${currentScore}/10)`;
+      updateStars(stars, i);
+      updateScoreText(label, score, currentScore);
       saveUserRating(movie.id, currentScore);
     });
+    const updateStars = (stars2, fillUntil) => {
+      stars2.forEach((s, i2) => {
+        const src = i2 <= fillUntil ? "./images/star_filled.png" : "./images/star_empty.png";
+        s.setAttribute("src", src);
+      });
+    };
+    const updateScoreText = (label2, score2, value) => {
+      label2.textContent = SCORE_AND_LABEL[value];
+      score2.textContent = `(${value}/10)`;
+    };
   });
   return myRating;
 };
@@ -358,17 +357,6 @@ const showMovieDetailInfo = async (movie) => {
   document.body.classList.add("modal-open");
   $("#app").appendChild(MovieDetailModal(movieInfo));
 };
-const NoSearchResults = (text) => {
-  return createElement(
-    /*html*/
-    `
-    <div class="no-result">
-      <img src="./images/no_result_logo.png" alt="검색 결과 없음"/>
-      <h2>${text}</h2>
-    </div>  
-  `
-  );
-};
 let currentMode = "popular";
 let currentPage = {
   popular: 1,
@@ -449,7 +437,12 @@ const searchMovie = async (input) => {
     );
   }
 };
-const Header = ({ title, imageUrl, voteAverage }) => {
+const Header = ({
+  title,
+  imageUrl,
+  voteAverage,
+  topMovieInfo
+}) => {
   const header = createElement(
     /*html*/
     `
@@ -480,6 +473,8 @@ const Header = ({ title, imageUrl, voteAverage }) => {
     text: "자세히 보기",
     className: ["primary", "detail"]
   });
+  if (topMovieInfo)
+    button.addEventListener("click", () => showMovieDetailInfo(topMovieInfo));
   if (!rate) return;
   const logoSearchContainer = $(".logo-search-container", header);
   logoSearchContainer.appendChild(searchBar);
@@ -568,7 +563,8 @@ const updateTopMovieInfo = (movies, wrapper, initialHeader) => {
     const updatedHeader = Header({
       title: topMovie.title,
       imageUrl: `${IMG_BASE_URL}${topMovie.poster_path}`,
-      voteAverage: topMovie.vote_average
+      voteAverage: topMovie.vote_average,
+      topMovieInfo: topMovie
     });
     if (updatedHeader && initialHeader)
       wrapper.replaceChild(updatedHeader, initialHeader);
