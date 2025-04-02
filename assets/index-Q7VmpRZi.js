@@ -403,7 +403,7 @@ const SearchBar = () => {
     searchMovie(input.value);
   });
   input.addEventListener("keydown", async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.isComposing === false) {
       searchMovie(input.value);
     }
   });
@@ -513,14 +513,18 @@ addEventListener("load", async () => {
   updateMovieContainer(wrapper, initialHeader);
   const footer = Footer();
   app.appendChild(footer);
-  window.addEventListener("scroll", onScroll);
 });
-const onScroll = async () => {
-  const mode = movieState.getMode();
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight && movieState.getCurrentPage() < movieState.getMaxPage()) {
-    await loadMoreMovies(mode);
-  }
-};
+const target = document.querySelector("#scroll-target");
+if (target) {
+  const observer = new IntersectionObserver(async (entries) => {
+    const entry = entries[0];
+    if (entry.isIntersecting && movieState.getCurrentPage() < movieState.getMaxPage()) {
+      const mode = movieState.getMode();
+      await loadMoreMovies(mode);
+    }
+  });
+  observer.observe(target);
+}
 const renderMovieContainer = (wrapper, movieList) => {
   wrapper.appendChild(Caption({ title: CAPTION }));
   wrapper.appendChild(movieList);
